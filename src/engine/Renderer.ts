@@ -1,11 +1,13 @@
 import Shader from './shaders/Shader';
 import basicShader from './shaders/glsl/basicShader';
+import Texture from './Texture';
 
 class Renderer {
   private canvas: HTMLCanvasElement;
   private _gl: WebGLRenderingContext;
   private _basicShader: Shader;
   private _shader: Shader;
+  private _lastTexture: string;
 
   public static instance: Renderer;
 
@@ -34,7 +36,7 @@ class Renderer {
     const gl = this.canvas.getContext('webgl');
 
     gl.enable(gl.DEPTH_TEST);
-    gl.disable(gl.CULL_FACE);
+    gl.enable(gl.CULL_FACE);
     gl.enable(gl.BLEND);
 
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -54,6 +56,15 @@ class Renderer {
 
   public clear() {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+  }
+
+  public bindTexture(texture: Texture, uniform: WebGLUniformLocation) {
+    if (this._lastTexture === texture.key) {
+      return;
+    }
+
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture.texture);
+    this.gl.uniform1i(uniform, 0);
   }
 
   public get gl(): WebGLRenderingContext {

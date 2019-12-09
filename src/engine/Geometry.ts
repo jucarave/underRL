@@ -30,6 +30,12 @@ class Geometry {
     return this;
   }
 
+  public addTexCoord(x: number, y: number): Geometry {
+    this._vertexData.push(x, y);
+
+    return this;
+  }
+
   public build(renderer: Renderer): Geometry {
     this._renderer = renderer;
 

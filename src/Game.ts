@@ -2,7 +2,7 @@ declare const Stats: any;
 
 import Renderer from 'engine/Renderer';
 import Camera from 'engine/Camera';
-import Tile from 'engine/Tile';
+import TilesMap from 'engine/TilesMap';
 import Vector3 from 'engine/math/Vector3';
 import { Config } from 'Config';
 import Texture from 'engine/Texture';
@@ -41,24 +41,18 @@ class Game {
 
     const texture = Texture.getTexture('tileset');
 
-    const tile = new Tile(texture, Vector3.zero);
+    const tile = new TilesMap(texture, Vector3.zero);
     tile.uvs = texture.getUVS(32, 0, 16, 32);
 
     this.loopRender(tile, camera);
   }
 
-  private loopRender(tile: Tile, camera: Camera) {
+  private loopRender(tile: TilesMap, camera: Camera) {
     stats.begin();
 
     this._renderer.clear();
 
-    for (let x = 0; x < Config.SCREEN_WIDTH; x += Config.TILE_WIDTH) {
-      for (let y = 0; y < Config.SCREEN_HEIGHT; y += Config.TILE_HEIGHT) {
-        tile.position.set(x, y, 0);
-        tile.color.set(Math.random(), Math.random(), Math.random());
-        tile.render(camera);
-      }
-    }
+    tile.render(camera);
 
     stats.end();
 

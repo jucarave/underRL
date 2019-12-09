@@ -1,14 +1,13 @@
 import Vector3 from 'engine/math/Vector3';
-import Material from 'engine/materials/Material';
 import Camera from 'engine/Camera';
 import Geometry from 'engine/Geometry';
-import MaterialBasic from './materials/MaterialBasic';
+import MaterialTileMap from './materials/MaterialTileMap';
 import Renderer from './Renderer';
 import Texture from './Texture';
 import { Config } from 'Config';
 
-class Tile {
-  private _material: Material;
+class TilesMap {
+  private _material: MaterialTileMap;
   private _geometry: Geometry;
 
   public position: Vector3;
@@ -20,7 +19,7 @@ class Tile {
     this.color = new Vector3(1, 1, 1);
     this.uvs = [0, 0, 1, 1];
 
-    this._material = new MaterialBasic(Renderer.instance, texture);
+    this._material = new MaterialTileMap(Renderer.instance, texture);
 
     this._buildGeometry();
   }
@@ -40,8 +39,19 @@ class Tile {
   }
 
   public render(camera: Camera): void {
-    this._material.render(camera, this, this._geometry);
+    this._material.renderGeometry(this._geometry);
+    this._material.renderCameraProperties(camera);
+    this._material.renderTexture();
+
+    for (let x = 0; x < Config.SCREEN_WIDTH; x += Config.TILE_WIDTH) {
+      for (let y = 0; y < Config.SCREEN_HEIGHT; y += Config.TILE_HEIGHT) {
+        this.position.set(x, y, 0);
+        this.color.set(Math.random(), Math.random(), Math.random());
+
+        this._material.render(camera, this, this._geometry);
+      }
+    }
   }
 }
 
-export default Tile;
+export default TilesMap;

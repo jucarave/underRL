@@ -1,14 +1,12 @@
 import Material from './Material';
 import Camera from 'engine/Camera';
 import Geometry from 'engine/Geometry';
-import Tile from 'engine/Tile';
+import TilesMap from 'engine/TilesMap';
 import Texture from 'engine/Texture';
 import Renderer from 'engine/Renderer';
 
-class MaterialBasic extends Material {
+class MaterialTileMap extends Material {
   private _texture: Texture;
-
-  private static _lastGeometry: Geometry = null;
 
   constructor(renderer: Renderer, texture: Texture) {
     super(renderer);
@@ -16,11 +14,7 @@ class MaterialBasic extends Material {
     this._texture = texture;
   }
 
-  private _renderGeometry(geometry: Geometry) {
-    if (MaterialBasic._lastGeometry === geometry) {
-      return;
-    }
-
+  public renderGeometry(geometry: Geometry) {
     const gl = this._renderer.gl;
     const shader = this._renderer.shader;
 
@@ -30,11 +24,9 @@ class MaterialBasic extends Material {
     gl.vertexAttribPointer(shader.attributes['aTexCoords'], 2, gl.FLOAT, false, 5 * 4, 3 * 4);
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.indexBuffer);
-
-    MaterialBasic._lastGeometry = geometry;
   }
 
-  private _renderCameraProperties(camera: Camera) {
+  public renderCameraProperties(camera: Camera) {
     const gl = this._renderer.gl;
     const shader = this._renderer.shader;
 
@@ -42,7 +34,7 @@ class MaterialBasic extends Material {
     gl.uniformMatrix4fv(shader.uniforms['uView'], false, camera.viewMatrix.data);
   }
 
-  private _renderTileProperties(tile: Tile) {
+  private _renderTileProperties(tile: TilesMap) {
     const gl = this._renderer.gl;
     const shader = this._renderer.shader;
     const p = tile.position;
@@ -53,22 +45,19 @@ class MaterialBasic extends Material {
     gl.uniform4fv(shader.uniforms['uUVs'], tile.uvs);
   }
 
-  private _renderTexture() {
+  public renderTexture() {
     const shader = this._renderer.shader;
 
     this._renderer.bindTexture(this._texture, shader.uniforms['uTexture']);
   }
 
-  public render(camera: Camera, tile: Tile, geometry: Geometry): void {
+  public render(_camera: Camera, tile: TilesMap, geometry: Geometry): void {
     const gl = this._renderer.gl;
 
-    this._renderGeometry(geometry);
     this._renderTileProperties(tile);
-    this._renderCameraProperties(camera);
-    this._renderTexture();
 
     gl.drawElements(gl.TRIANGLES, geometry.trianglesSize, gl.UNSIGNED_SHORT, 0);
   }
 }
 
-export default MaterialBasic;
+export default MaterialTileMap;

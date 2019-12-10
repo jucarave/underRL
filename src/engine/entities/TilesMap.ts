@@ -1,21 +1,21 @@
 import Vector3 from 'engine/math/Vector3';
 import Camera from 'engine/Camera';
 import Geometry from 'engine/Geometry';
-import MaterialTileMap from './materials/MaterialTileMap';
-import Renderer from './Renderer';
-import Texture from './Texture';
+import MaterialTileMap from 'engine/materials/MaterialTileMap';
+import Renderer from 'engine/Renderer';
+import Texture from 'engine/Texture';
 import { Config } from 'Config';
+import Entity from './Entity';
 
-class TilesMap {
-  private _material: MaterialTileMap;
-  private _geometry: Geometry;
-
+class TilesMap extends Entity {
   public position: Vector3;
   public background: Vector3;
   public color: Vector3;
   public uvs: Array<number>;
 
   constructor(texture: Texture, position: Vector3) {
+    super(position);
+
     this.position = position;
     this.background = new Vector3(1, 1, 1);
     this.color = new Vector3(1, 1, 1);
@@ -67,9 +67,11 @@ class TilesMap {
   }
 
   public render(camera: Camera): void {
-    this._material.renderGeometry(this._geometry);
-    this._material.renderCameraProperties(camera);
-    this._material.renderTexture();
+    const mat = <MaterialTileMap>this._material;
+
+    mat.renderGeometry(this._geometry);
+    mat.renderCameraProperties(camera);
+    mat.renderTexture();
 
     for (let x = 0; x < Config.SCREEN_WIDTH; x += Config.TILE_WIDTH) {
       for (let y = 0; y < Config.SCREEN_HEIGHT; y += Config.TILE_HEIGHT) {
@@ -81,7 +83,7 @@ class TilesMap {
         rgb = this.hslToRgb(Math.random(), 1, 0.5);
         this.background.set(rgb[0], rgb[1], rgb[2]);
 
-        this._material.render(camera, this, this._geometry);
+        mat.render(camera, this, this._geometry);
       }
     }
   }

@@ -2,7 +2,7 @@ declare const Stats: any;
 
 import Renderer from 'engine/Renderer';
 import Camera from 'engine/Camera';
-import TilesMap from 'engine/TilesMap';
+import TilesMap from 'engine/entities/TilesMap';
 import Vector3 from 'engine/math/Vector3';
 import { Config } from 'Config';
 import Texture from 'engine/Texture';

@@ -1,7 +1,7 @@
 import Camera from 'engine/Camera';
 import Geometry from 'engine/Geometry';
 import Renderer from 'engine/Renderer';
-import TilesMap from 'engine/TilesMap';
+import Entity from 'engine/entities/Entity';
 
 abstract class Material {
   protected _renderer: Renderer;
@@ -10,7 +10,7 @@ abstract class Material {
     this._renderer = renderer;
   }
 
-  public abstract render(camera: Camera, tile: TilesMap, geometry: Geometry): void;
+  public abstract render(camera: Camera, entity: Entity, geometry: Geometry): void;
 }
 
 export default Material;

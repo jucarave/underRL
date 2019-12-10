@@ -1,9 +1,10 @@
 import Material from './Material';
 import Camera from 'engine/Camera';
 import Geometry from 'engine/Geometry';
-import TilesMap from 'engine/TilesMap';
+import TilesMap from 'engine/entities/TilesMap';
 import Texture from 'engine/Texture';
 import Renderer from 'engine/Renderer';
+import Entity from 'engine/entities/Entity';
 
 class MaterialTileMap extends Material {
   private _texture: Texture;
@@ -53,8 +54,9 @@ class MaterialTileMap extends Material {
     this._renderer.bindTexture(this._texture, shader.uniforms['uTexture']);
   }
 
-  public render(_camera: Camera, tile: TilesMap, geometry: Geometry): void {
+  public render(_camera: Camera, entity: Entity, geometry: Geometry): void {
     const gl = this._renderer.gl;
+    const tile = <TilesMap>entity;
 
     this._renderTileProperties(tile);
 

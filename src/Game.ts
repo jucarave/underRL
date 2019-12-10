@@ -42,7 +42,7 @@ class Game {
     const texture = Texture.getTexture('tileset');
 
     const tile = new TilesMap(texture, Vector3.zero);
-    tile.uvs = texture.getUVS(32, 0, 16, 32);
+    tile.uvs = texture.getUVS(0, 0, 16, 32);
 
     this.loopRender(tile, camera);
   }

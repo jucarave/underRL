@@ -38,10 +38,12 @@ class MaterialTileMap extends Material {
     const gl = this._renderer.gl;
     const shader = this._renderer.shader;
     const p = tile.position;
-    const c = tile.color;
+    const b = tile.background;
+    const f = tile.color;
 
     gl.uniform3f(shader.uniforms['uPosition'], p.x, p.y, p.z);
-    gl.uniform3f(shader.uniforms['uColor'], c.x, c.y, c.z);
+    gl.uniform3f(shader.uniforms['uBackgroundColor'], b.x, b.y, b.z);
+    gl.uniform3f(shader.uniforms['uForegroundColor'], f.x, f.y, f.z);
     gl.uniform4fv(shader.uniforms['uUVs'], tile.uvs);
   }
 

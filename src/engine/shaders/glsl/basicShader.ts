@@ -26,7 +26,8 @@ const basicShader: ShaderStruct = {
     precision mediump float;
 
     uniform sampler2D uTexture;
-    uniform vec3 uColor;
+    uniform vec3 uBackgroundColor;
+    uniform vec3 uForegroundColor;
     uniform vec4 uUVs;
 
     varying vec2 vTexCoords;
@@ -34,7 +35,8 @@ const basicShader: ShaderStruct = {
     void main(void) {
       vec2 coords = mod(vTexCoords * uUVs.zw + uUVs.xy, 1.0);
 
-      gl_FragColor = texture2D(uTexture, coords) * vec4(uColor, 1.0);
+      vec4 tex = texture2D(uTexture, coords);
+      gl_FragColor = vec4(uBackgroundColor, 1.0) * (1.0 - tex.a) + vec4(uForegroundColor, 1.0) * tex.a;
     }
   `
 };

@@ -1,19 +1,15 @@
 declare const Stats: any;
 
 import Renderer from 'engine/Renderer';
-import Camera from 'engine/Camera';
-import TilesMap from 'engine/entities/TilesMap';
-import Vector3 from 'engine/math/Vector3';
 import { Config } from 'Config';
 import Texture from 'engine/Texture';
+import Scene from 'engine/Scene';
 
 const stats = new Stats();
 
 class Game {
-  private _renderer: Renderer;
-
   init() {
-    this._renderer = new Renderer(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT, document.getElementById('divGame'));
+    new Renderer(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT, document.getElementById('divGame'));
 
     stats.showPanel(1);
     document.body.appendChild(stats.dom);
@@ -36,27 +32,20 @@ class Game {
   }
 
   private renderTestScene() {
-    const camera = Camera.createOrthographic(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT, 0.1, 100.0);
-    camera.position.set(Config.SCREEN_WIDTH / 2.0, Config.SCREEN_HEIGHT / 2.0, 5);
+    const scene = new Scene();
+    scene.init();
 
-    const texture = Texture.getTexture('tileset');
-
-    const tile = new TilesMap(texture, Vector3.zero);
-    tile.uvs = texture.getUVS(0, 0, 16, 32);
-
-    this.loopRender(tile, camera);
+    this.loopRender(scene);
   }
 
-  private loopRender(tile: TilesMap, camera: Camera) {
+  private loopRender(scene: Scene) {
     stats.begin();
 
-    this._renderer.clear();
-
-    tile.render(camera);
+    scene.render();
 
     stats.end();
 
-    requestAnimationFrame(() => this.loopRender(tile, camera));
+    requestAnimationFrame(() => this.loopRender(scene));
   }
 }
 

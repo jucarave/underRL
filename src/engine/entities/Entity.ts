@@ -3,11 +3,13 @@ import Geometry from 'engine/Geometry';
 import Material from 'engine/materials/Material';
 import Camera from 'engine/Camera';
 import Component from 'engine/Component';
+import Scene from 'engine/Scene';
 
 class Entity {
   protected _geometry: Geometry;
   protected _material: Material;
   protected _components: Array<Component>;
+  protected _scene: Scene;
   protected _inited: boolean;
 
   public position: Vector3;
@@ -32,24 +34,28 @@ class Entity {
     return this;
   }
 
-  public init(): Entity {
+  public setScene(scene: Scene): void {
+    this._scene = scene;
+  }
+
+  public init(): void {
+    if (this._inited) {
+      return;
+    }
+
     this._components.forEach((component: Component) => {
       component.init();
     });
 
     this._inited = true;
-
-    return this;
   }
 
-  public destroy(): Entity {
+  public destroy(): void {
     this._components.forEach((component: Component) => {
       component.destroy();
     });
 
     this._components = null;
-
-    return this;
   }
 
   public update(): Entity {
@@ -60,7 +66,11 @@ class Entity {
     return this;
   }
 
-  public render(camera: Camera) {
+  public render(camera: Camera): void {
+    if (!this._material || !this._geometry) {
+      return;
+    }
+
     this._material.render(camera, this, this._geometry);
   }
 }

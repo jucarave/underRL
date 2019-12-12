@@ -6,6 +6,7 @@ import Renderer from 'engine/Renderer';
 import Texture from 'engine/Texture';
 import { Config } from 'Config';
 import Entity from './Entity';
+import { MapTile } from 'engine/system/MapData';
 
 class TilesMap extends Entity {
   public position: Vector3;
@@ -37,6 +38,16 @@ class TilesMap extends Entity {
     geometry.build(Renderer.instance);
 
     this._geometry = geometry;
+  }
+
+  public setMapTile(tile: MapTile) {
+    let rgb = tile.backgroundColor;
+    this.background.set(rgb[0], rgb[1], rgb[2]);
+
+    rgb = tile.foreGroundColor;
+    this.color.set(rgb[0], rgb[1], rgb[2]);
+
+    this.uvs = tile.uvs;
   }
 
   public preRender(camera: Camera): void {

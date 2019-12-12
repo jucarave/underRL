@@ -4,6 +4,7 @@ import Renderer from 'engine/Renderer';
 import { Config } from 'Config';
 import Texture from 'engine/Texture';
 import Scene from 'engine/Scene';
+import { TestMap } from 'data/TestMap';
 
 const stats = new Stats();
 
@@ -33,6 +34,8 @@ class Game {
 
   private renderTestScene() {
     const scene = new Scene();
+
+    scene.setMapData(TestMap);
     scene.init();
 
     this.loopRender(scene);

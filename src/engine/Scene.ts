@@ -3,12 +3,15 @@ import TilesMap from './entities/TilesMap';
 import Texture from './Texture';
 import Camera from './Camera';
 import { Config } from 'Config';
+import MapData from './system/MapData';
+import Renderer from './Renderer';
 
 class Scene {
   private _entities: Array<Entity>;
   private _tileMap: TilesMap;
   private _inited: boolean;
   private _camera: Camera;
+  private _mapData: MapData;
 
   constructor() {
     this._entities = [];
@@ -35,46 +38,27 @@ class Scene {
     return this;
   }
 
-  private hslToRgb(h: number, s: number, l: number) {
-    let r, g, b;
-
-    if (s == 0) {
-      r = g = b = l; // achromatic
-    } else {
-      function hue2rgb(p: number, q: number, t: number) {
-        if (t < 0) t += 1;
-        if (t > 1) t -= 1;
-        if (t < 1 / 6) return p + (q - p) * 6 * t;
-        if (t < 1 / 2) return q;
-        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-        return p;
-      }
-
-      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      const p = 2 * l - q;
-
-      r = hue2rgb(p, q, h + 1 / 3);
-      g = hue2rgb(p, q, h);
-      b = hue2rgb(p, q, h - 1 / 3);
-    }
-
-    return [r, g, b];
+  public setMapData(map: MapData) {
+    this._mapData = map;
   }
 
   public updateTileMap(): void {
     const tm = this._tileMap;
 
+    Renderer.instance.clear();
     tm.preRender(this._camera);
 
     for (let x = 0; x < Config.SCREEN_WIDTH; x += Config.TILE_WIDTH) {
       for (let y = 0; y < Config.SCREEN_HEIGHT; y += Config.TILE_HEIGHT) {
-        tm.position.set(x, y, 0);
+        const tile = this._mapData.map[y / Config.TILE_HEIGHT][x / Config.TILE_WIDTH];
+        if (tile === 0) {
+          continue;
+        }
 
-        let rgb = this.hslToRgb(Math.random(), 1, 0.5);
-        tm.color.set(rgb[0], rgb[1], rgb[2]);
+        tm.position.set(x, Config.SCREEN_HEIGHT - y - Config.TILE_HEIGHT, 0);
 
-        rgb = this.hslToRgb(Math.random(), 1, 0.5);
-        tm.background.set(rgb[0], rgb[1], rgb[2]);
+        const pal = this._mapData.palette[tile];
+        tm.setMapTile(pal);
 
         tm.render(this._camera);
       }
